@@ -129,8 +129,8 @@ toDistinct = ['N\t\t\t', 'E ', 'N ', 'NN', ' N', 'N\t', 'N0']
 expected = ['N', 'E', 'N', 'N', 'N', 'N', 'N']
 
 for i in range(0, len(toDistinct)):
-    diszpecserTargetList = replace_element(diszpecserTargetList, toDistinct[i], expected[i])
-    ugyfelTargetList = replace_element(ugyfelTargetList, toDistinct[i], expected[i])
+    diszpecserTargetList = methods.replace_element(diszpecserTargetList, toDistinct[i], expected[i])
+    ugyfelTargetList = methods.replace_element(ugyfelTargetList, toDistinct[i], expected[i])
 
 # ugyfelTargetList
 # diszpecserTargetList
@@ -148,9 +148,12 @@ target = ugyfelTargetList + diszpecserTargetList
 # len(target) == len(texts)
 
 data_tuples = list(zip(texts, target))
-text_and_target_df = pd.DataFrame(data_tuples, columns=['Text','Target'])
-text_and_target_df
+text_and_label_df = pd.DataFrame(data_tuples, columns=['Text','Label'])
 
-text_and_target_df.to_excel("text_and_target_df.xlsx")
+text_and_label_df.replace(r'^\s*$', np.nan, regex=True, inplace=True)
+text_and_label_df.dropna(inplace=True)
+text_and_label_df.reset_index(drop=True, inplace=True)
+
+text_and_label_df.to_excel("text_and_label_df.xlsx")
 
 #endregion
