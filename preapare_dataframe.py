@@ -6,10 +6,14 @@ import numpy as np
 
 #endregion
 
+#region read original dataframe
+
 df = pd.read_excel("original_df.xlsx", sheet_name="Sheet1")
 df.drop(['Unnamed: 0'], axis = 1, inplace=True)
 
 # df.fillna(-999).equals(original_df.fillna(-999))
+
+#endregion
 
 #region modify dataframe
 
@@ -143,10 +147,10 @@ target = ugyfelTargetList + diszpecserTargetList
 # 
 # len(target) == len(texts)
 
-with open("texts.txt", "w") as texts_outfile:
-    texts_outfile.write("\n".join(texts))
+data_tuples = list(zip(texts, target))
+text_and_target_df = pd.DataFrame(data_tuples, columns=['Text','Target'])
+text_and_target_df
 
-with open("target.txt", "w") as target_outfile:
-    target_outfile.write("\n".join(target))
+text_and_target_df.to_excel("text_and_target_df.xlsx")
 
 #endregion
