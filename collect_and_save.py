@@ -5,6 +5,7 @@ import re
 import ftplib
 import io
 import pandas as pd
+import numpy as np
 from os import listdir
 from os.path import isfile, join
 
@@ -43,7 +44,7 @@ path = "files/"
 onlyfiles = [f for f in listdir(path) if isfile(join(path, f))]
 onlyfiles
 
-df = pd.DataFrame()
+original_df = pd.DataFrame()
 
 wrong_files = ["0160.TextGrid",
         "0167.TextGrid",
@@ -69,10 +70,11 @@ for i in onlyfiles:
     temp_df = pd.DataFrame()
 
     temp_df = methods.to_dataframe(temp_df, names, l, i)
-    df = pd.concat([df, temp_df]).reset_index(drop = True)
+    original_df = pd.concat([original_df, temp_df]).reset_index(drop = True)
 
-df
+original_df.replace(r'^\s*$', np.nan, regex=True, inplace=True)
+original_df
 
-df.to_excel("collected_text.xlsx") 
+original_df.to_excel("original_df.xlsx") 
 
 #endregion
