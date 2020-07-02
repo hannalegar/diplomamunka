@@ -61,3 +61,9 @@ def to_dataframe(df, interval_names, lista, name):
             index = i
         df.insert(index, "textGrid", name, False)
         return df
+
+def replace_element(my_list, old_value, new_value):
+        for n, i in enumerate(my_list):
+            if i == old_value:
+                my_list[n] = new_value
+        return my_list
