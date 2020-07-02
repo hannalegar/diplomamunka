@@ -73,4 +73,6 @@ for i in onlyfiles:
 
 df
 
+df.to_excel("collected_text.xlsx") 
+
 #endregion
