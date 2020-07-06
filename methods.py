@@ -1,4 +1,9 @@
 import re
+import keras
+from keras.preprocessing import sequence 
+from nltk.corpus import stopwords
+
+stop_words = set(stopwords.words("Hungarian"))
 
 def write_to_file(path, text):
         f = open("files/" + path,"w") 
@@ -67,3 +72,16 @@ def replace_element(my_list, old_value, new_value):
             if i == old_value:
                 my_list[n] = new_value
         return my_list
+
+def split_senteces_into_words(text):
+    return keras.preprocessing.text.text_to_word_sequence(text,
+                                               filters='!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~\t\n',
+                                               lower=True,
+                                               split=" ")    
+
+def stop_word_filtering(sentence):
+    filtered = []
+    for w in sentence:
+        if w not in stop_words:
+            filtered.append(w)
+    return filtered
