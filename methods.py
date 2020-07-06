@@ -85,3 +85,21 @@ def stop_word_filtering(sentence):
         if w not in stop_words:
             filtered.append(w)
     return filtered
+
+def encode(text, tokenizer):
+    return [tokenizer.word_index[i] for i in text]
+
+def decode(encoded_text, rwm):
+    print(' '.join(rwm[id] for id in encoded_text))
+
+char_toNum_switcher = {
+        "S" : 0,
+        "N" : 1,
+        "P" : 2
+}
+
+num_toChar_switcher = {
+         0: "S",
+         1: "N",
+         2: "P"
+}
