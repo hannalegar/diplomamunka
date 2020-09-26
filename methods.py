@@ -1,5 +1,6 @@
 import re
 import keras
+import seaborn as sns
 from keras.preprocessing import sequence 
 from nltk.corpus import stopwords
 
@@ -103,3 +104,6 @@ num_toChar_switcher = {
          1: "N",
          2: "P"
 }
+
+def simple_barplot(label, title):
+    sns.countplot(x="Label", data=label).set(title=title)

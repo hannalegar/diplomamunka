@@ -93,5 +93,5 @@ text_and_label_df2['y'] = y.tolist()
 
 #end region
 
-text_and_label_df2
+text_and_label_df2.head(10)
 text_and_label_df2.to_excel("preprocessed.xlsx")
