@@ -107,3 +107,10 @@ num_toChar_switcher = {
 
 def simple_barplot(label, title):
     sns.countplot(x="Label", data=label).set(title=title)
+
+def stringarray_to_array(st):
+    # print(st)
+    res = st[st.find("[")+1:st.rfind("]")].translate({ord('\''): None}).split(',')
+
+    # print(len(res))
+    return res
