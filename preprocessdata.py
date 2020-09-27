@@ -35,6 +35,7 @@ text_and_label_df2.head(15)
 
 t = Tokenizer()
 t.fit_on_texts(text_and_label_df2['Text'])
+top_words = len(t.word_index) + 1 #22776
 
 encoded_texts = []
 encoded_texts = [methods.encode(i, t) for i in text_and_label_df2['Stop word filtered text'].tolist()]

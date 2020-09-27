@@ -5,6 +5,13 @@ import pandas as pd
 import random
 import seaborn as sns
 import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.model_selection import train_test_split
+from keras.models import Sequential
+from keras.layers import Embedding
+from keras.layers import Dense
+from keras.layers.recurrent import LSTM
+from keras.preprocessing.text import Tokenizer
 
 #endregion
 
@@ -93,13 +100,66 @@ all_text = [methods.stringarray_to_array(i) for i in preprocessed_df['Stop word 
 # all_text[33573]
 # preprocessed_df['Modified label'][33573]
 
+indexes = [all_text.index(i) for i in selectedTexts]
+
+preprocessed_df["X"][0]
+
+ize = to_array(preprocessed_df["X"][0])
+ize
+
+X = []
+for i in indexes:
+    X.append(preprocessed_df["X"][i])
+
+X = [to_array(i) for i in X ]
+X = np.array(X)
+
+# selectedTexts[0]
+# selectedTargets[0]
+
+# all_text.index(selectedTexts[0])
+# all_text[8797]
+
+# preprocessed_df['X'][8797]
+# X[0]
+
+y = [] 
+y = [preprocessed_df["y"][i] for i in indexes]
+y = [to_float_array(i) for i in y]
+y = np.array(y)
+y
+
 
 # endregion
 
+# region build the model
 
-
-
-
-
+len(X) == len(y)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+X_train
+X_test
+y_train
+y_test
+
+embedding_vector_length = 32 
+
+top_words = 22776
+
+weight = [1, 2, 150]
+
+model = Sequential() 
+model.add(Embedding(top_words, embedding_vector_length, input_length=370)) 
+model.add(LSTM(100)) 
+model.add(Dense(3, input_dim=3, activation='relu'))
+model.add(Dense(3, activation='softmax')) 
+model.compile(loss="categorical_crossentropy" ,optimizer='adam', metrics=['accuracy']) 
+print(model.summary()) 
+
+model.fit(X_train, y_train, validation_data=(X_test, y_test), nb_epoch=5, batch_size=64, class_weight=weight)
+
+scores = model.evaluate(X_test, y_test, verbose=0) 
+print("Accuracy: %.2f%%" % (scores[1]*100))
+
+# endregion

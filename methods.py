@@ -114,3 +114,11 @@ def stringarray_to_array(st):
 
     # print(len(res))
     return res
+
+def to_array(s):
+    res = [int(i) for i in  stringarray_to_array(s)]
+    return res
+
+def to_float_array(s):
+    res = [float(i) for i in stringarray_to_array(s)]
+    return res
