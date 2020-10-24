@@ -38,7 +38,6 @@ for d in ftp.nlst():
 
 #region merge into dataframe
 
-path = "C:/Users/z003w5tm/Documents/BME/code/ProjectLab_2-master/files/"
 path = "files/"
 
 onlyfiles = [f for f in listdir(path) if isfile(join(path, f))]
@@ -66,14 +65,20 @@ for i in onlyfiles:
     if i in wrong_files:
         continue
     
-    l, names = methods.read(path + i)
+    l, names, mins, maxs = methods.read(path + i)
     temp_df = pd.DataFrame()
 
-    temp_df = methods.to_dataframe(temp_df, names, l, i)
+    temp_df = methods.to_dataframe(temp_df, names, l, i, mins, maxs)
     original_df = pd.concat([original_df, temp_df]).reset_index(drop = True)
 
 original_df.replace(r'^\s*$', np.nan, regex=True, inplace=True)
 original_df
+
+#proba
+#l, names, mins, maxs = methods.read(path + '0001.TextGrid')
+
+#temp_df = pd.DataFrame()
+#temp_df = methods.to_dataframe(temp_df, names, l, '0001.TextGrid', mins, maxs)
 
 original_df.to_excel("original_df.xlsx") 
 

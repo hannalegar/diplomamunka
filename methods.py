@@ -25,47 +25,72 @@ def interval_names(path):
 
         return names
 
-def process(line, f, next_name, index, lists):
-        l = line
-        while l and next_name not in l:
-            if 'text' in l:
-                lists[index].append(re.findall(r'"([^"]*)"', l)[0])
-            l = f.readline()
-        return l
+def read(path):
+        names_results = interval_names(path)
+        names_results.append("vege")
 
-def find_texts(path, names, lists):
+        text_lists = list()
+        min_list = list()
+        max_list = list()
+
+        for name in names_results:
+            l = list()
+            l.append(name)
+            text_lists.append(l)
+
+        find_texts(path, names_results, text_lists, min_list, max_list)
+        min_list, max_list = normalize_intervals(text_lists, min_list, max_list)
+
+        return text_lists, names_results, min_list, max_list
+
+def find_texts(path, names, text_lists, min_list, max_list):
         f = open(path, "r")
         line = f.readline()
 
         i = 0
         while names[i] != "vege" and i < len(names):
-            line = process(line, f, names[i+1], i, lists)
+            line = process(line, f, names[i+1], i, text_lists, min_list, max_list)
             i += 1    
 
         f.close()
 
-def read(path):
-        names_results = interval_names(path)
-        names_results.append("vege")
+def process(line, f, next_name, index, text_lists, min_list, max_list):
+        l = line
+        while l and next_name not in l:
+            if 'text' in l:
+                text_lists[index].append(re.findall(r'"([^"]*)"', l)[0])
+            if 'xmin' in l:
+                length = len(l.split())
+                min_list.append(l.split()[length-1])
+            if 'xmax' in l:
+                length = len(l.split())
+                max_list.append(l.split()[length-1])
+            l = f.readline()
+        return l
 
-        lists = list()
+def normalize_intervals(text_list, min_list, max_list):
+    normalized_mins = list()
+    normalized_maxs = list()
+    for i in range(len(text_list[0]) -1):
+        normalized_mins.append(min_list[i+2])
+        normalized_maxs.append(max_list[i+2])
 
-        for name in names_results:
-            l = list()
-            l.append(name)
-            lists.append(l)
+    return normalized_mins, normalized_maxs
 
-        find_texts(path, names_results, lists)
-
-        return lists, names_results
-
-def to_dataframe(df, interval_names, lista, name):  
+def to_dataframe(df, interval_names, lista, name, mins, maxs):  
         index = 0
         for i in range(0, len(interval_names)):
             if interval_names[i] != 'vege':
                 df.insert(i, interval_names[i], lista[i], True)
             index = i
         df.insert(index, "textGrid", name, False)
+
+        mins.insert(0, 'xmin')
+        maxs.insert(0, 'xmax')
+
+        df.insert(1, "xmin", mins, True)
+        df.insert(2, "xmax", maxs, True)
+
         return df
 
 def replace_element(my_list, old_value, new_value):
