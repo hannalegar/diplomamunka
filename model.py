@@ -16,14 +16,13 @@ from keras.preprocessing.text import Tokenizer
 #endregion
 
 preprocessed_df = pd.read_excel("preprocessed.xlsx", sheet_name="Sheet1")
+preprocessed_df.reset_index(drop=True, inplace=True)
 preprocessed_df
 
 # region refine the dataset
 
-preprocessed_df.head(5)
-
 atLeastFive_indexes = []
-atLeastFive_indexes = [i for i in range(len(preprocessed_df['Stop word filtered text'])) if len(methods.stringarray_to_array(preprocessed_df['Stop word filtered text'][i])) > 4]
+atLeastFive_indexes = [i for i in range(length) if len(methods.stringarray_to_array(preprocessed_df['Stop word filtered text'][i])) > 4]
 
 min5_texts = []
 min5_target = []
@@ -104,14 +103,14 @@ indexes = [all_text.index(i) for i in selectedTexts]
 
 preprocessed_df["X"][0]
 
-ize = to_array(preprocessed_df["X"][0])
+ize = methods.to_array(preprocessed_df["X"][0])
 ize
 
 X = []
 for i in indexes:
     X.append(preprocessed_df["X"][i])
 
-X = [to_array(i) for i in X ]
+X = [methods.to_array(i) for i in X ]
 X = np.array(X)
 
 # selectedTexts[0]
@@ -125,10 +124,9 @@ X = np.array(X)
 
 y = [] 
 y = [preprocessed_df["y"][i] for i in indexes]
-y = [to_float_array(i) for i in y]
+y = [methods.to_float_array(i) for i in y]
 y = np.array(y)
 y
-
 
 # endregion
 
@@ -144,9 +142,7 @@ y_train
 y_test
 
 embedding_vector_length = 32 
-
 top_words = 22776
-
 weight = [1, 2, 150]
 
 model = Sequential() 

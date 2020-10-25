@@ -74,12 +74,6 @@ for i in onlyfiles:
 original_df.replace(r'^\s*$', np.nan, regex=True, inplace=True)
 original_df
 
-#proba
-#l, names, mins, maxs = methods.read(path + '0001.TextGrid')
-
-#temp_df = pd.DataFrame()
-#temp_df = methods.to_dataframe(temp_df, names, l, '0001.TextGrid', mins, maxs)
-
 original_df.to_excel("original_df.xlsx") 
 
 #endregion

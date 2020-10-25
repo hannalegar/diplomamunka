@@ -53,25 +53,34 @@ text_and_label_df2['Encoded text'] = encoded_texts
 
 #region encode label
 
+drop_indexis = text_and_label_df2[text_and_label_df2['Label'] == 'erzelem'].index
+text_and_label_df2.drop(drop_indexis, inplace=True)
+
+
 original_labels = text_and_label_df2['Label']
 new_labels = []
 
-for i in range(len(original_labels)):
-    if original_labels[i] in "NER":# N - Neutral, E - Other
+for i in original_labels:
+    if i in "NER":# N - Neutral, E - Other
         new_labels.append("S") # Semleges --> S
-    if original_labels[i] in "LPI": # L - Ironic / Satiric, P - Complaining, I - Angry / Nervous
+    if i in "LPI": # L - Ironic / Satiric, P - Complaining, I - Angry / Nervous
         new_labels.append("N") # Negatív --> N
-    if original_labels[i] in "VO": # V - Happy / Laughs, O - Joyful
+    if i in "VO": # V - Happy / Laughs, O - Joyful
         new_labels.append("P") # Pozitív --> P
+
+new_labels
+len(new_labels)
+len(original_labels)
 
 text_and_label_df2['Modified label'] = new_labels
 
 encoded_labels = []
 encoded_labels = [methods.char_toNum_switcher.get(i) for i in new_labels]
 encoded_labels
+np.unique(encoded_labels)
 
 text_and_label_df2['Encoded label'] = encoded_labels
-
+text_and_label_df2
 #endregion
 
 #region encoding labels and text
@@ -94,5 +103,5 @@ text_and_label_df2['y'] = y.tolist()
 
 #end region
 
-text_and_label_df2.head(10)
+text_and_label_df2
 text_and_label_df2.to_excel("preprocessed.xlsx")
