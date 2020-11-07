@@ -1,6 +1,9 @@
 import re
 import keras
 import seaborn as sns
+import librosa
+import pandas as pd
+import numpy as np
 from keras.preprocessing import sequence 
 from nltk.corpus import stopwords
 
@@ -147,3 +150,55 @@ def to_array(s):
 def to_float_array(s):
     res = [float(i) for i in stringarray_to_array(s)]
     return res
+
+def extract_information(df):
+    audio_files = [i.replace("TextGrid", "wav") for i in df['Source']]
+    
+    data_tuples = list(zip(audio_files, df['Speaking'], df['Xmin'], df['Xmax'], df['Label'], df['Encoded label'], df['y']))
+    new_df = pd.DataFrame(data_tuples, columns=['Source', 'Speaking', 'Xmin', 'Xmax', 'Label', 'Encoded label', 'Y'])
+    
+    return new_df
+
+def extract_features(file, start, duration):
+
+    # Load 5 seconds of a file, starting 15 seconds in  
+    # y, sr = librosa.load(filename, offset=15.0, duration=5.0)
+
+    # Loads the audio file as a floating point time series and assigns the default sample rate
+        # Sample rate is set to 22050 by default
+    X, sample_rate = librosa.load(file, res_type='kaiser_fast', offset=start, duration=duration)
+
+    # Generate Mel-frequency cepstral coefficients (MFCCs) from a time series 
+    mfccs = np.mean(librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=40).T,axis=0)
+
+    # Generates a Short-time Fourier transform (STFT) to use in the chroma_stft
+    stft = np.abs(librosa.stft(X))
+
+    # Computes a chromagram from a waveform or power spectrogram.
+    chroma = np.mean(librosa.feature.chroma_stft(S=stft, sr=sample_rate).T,axis=0)
+
+    # Computes a mel-scaled spectrogram.
+    mel = np.mean(librosa.feature.melspectrogram(X, sr=sample_rate).T,axis=0)
+
+    # Computes spectral contrast
+    contrast = np.mean(librosa.feature.spectral_contrast(S=stft, sr=sample_rate).T,axis=0)
+
+    # Computes the tonal centroid features (tonnetz)
+    tonnetz = np.mean(librosa.feature.tonnetz(y=librosa.effects.harmonic(X), sr=sample_rate).T,axis=0)
+
+    return mfccs, chroma, mel, contrast, tonnetz
+
+def audio_to_float_array(s):
+    s = s.replace("[", '')
+    s = s.replace("]", '')
+    s = s.replace("\n", '')
+    
+    b = s.split(' ')
+
+    c = []
+    for i in b:
+        if len(i) > 0:
+            c.append(float(i))
+
+    c = np.asarray(c)
+    return c
